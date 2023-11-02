@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:flutter_unsplash_api_getx/controller/simple_ui_controller.dart';
+import 'package:get/get.dart';
 
 class HomeView extends StatelessWidget {
-  const HomeView({super.key});
+  HomeView({Key? key}) : super(key: key);
+
+  SimpleUIController simpleUIController = Get.put(SimpleUIController());
 
   @override
   Widget build(BuildContext context) {
@@ -31,8 +36,27 @@ class HomeView extends StatelessWidget {
                       ),
                       Expanded(
                           flex: 13,
-                          child: Container(
-                            color: Colors.yellow,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            child: GridView.custom(
+                              shrinkWrap: true,
+                              physics: const BouncingScrollPhysics(),
+                                gridDelegate: SliverQuiltedGridDelegate(
+                                    crossAxisCount: 4,
+                                    mainAxisSpacing: 4,
+                                    crossAxisSpacing: 4,
+                                    pattern: [
+                                      const QuiltedGridTile(2, 2),
+                                      const QuiltedGridTile(1, 1),
+                                      const QuiltedGridTile(1, 1),
+                                      const QuiltedGridTile(1, 2),
+                                    ]),
+                                childrenDelegate:
+                                    SliverChildBuilderDelegate((context, index) {
+                                  return Container(
+                                    color: Colors.red,
+                                  );
+                                })),
                           )),
                     ],
                   ))
@@ -42,33 +66,48 @@ class HomeView extends StatelessWidget {
       ),
     );
   }
-}
 
-Widget _buildTabBar() {
-  return ListView.builder(
-    physics: const BouncingScrollPhysics(),
+  Widget _buildTabBar() {
+    return ListView.builder(
+      physics: const BouncingScrollPhysics(),
       scrollDirection: Axis.horizontal,
       itemBuilder: (context, index) {
-        return AnimatedContainer(
-          margin: EdgeInsets.fromLTRB(index == 0 ? 15 : 5, 0, 5, 0),
-          duration: const Duration(milliseconds: 300),
-          width: 100,
-          decoration: BoxDecoration(
-            color: Colors.red,
-            borderRadius: BorderRadius.circular(15)
-          ),
-          child: const Center(
-            child: Text(
-              'data',
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 13,
-                fontWeight: FontWeight.w500,
+        return Obx(
+          () => GestureDetector(
+            onTap: () {
+              simpleUIController.selectedIndex.value = index;
+            },
+            child: AnimatedContainer(
+              margin: EdgeInsets.fromLTRB(index == 0 ? 15 : 5, 0, 5, 0),
+              duration: const Duration(milliseconds: 300),
+              width: 100,
+              decoration: BoxDecoration(
+                  // color: Colors.red,
+                  color: index == simpleUIController.selectedIndex.value
+                      ? Colors.grey[700]
+                      : Colors.grey[200],
+                  borderRadius: BorderRadius.circular(
+                    index == simpleUIController.selectedIndex.value ? 18 : 15,
+                  )),
+              child: Center(
+                child: Text(
+                  'data',
+                  style: TextStyle(
+                    // color: Colors.black,
+                    color: index == simpleUIController.selectedIndex.value
+                        ? Colors.white
+                        : Colors.black,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
               ),
             ),
           ),
         );
-      });
+      },
+    );
+  }
 }
 
 class MyAppBar extends StatelessWidget {

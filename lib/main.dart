@@ -11,10 +11,10 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const GetMaterialApp(
+    return GetMaterialApp(
       title: 'Flutter Unsplash API Testing',
       debugShowCheckedModeBanner: false,
-      home: HomeView(),
+      home: HomeView()
     );
   }
 }
