@@ -25,11 +25,10 @@ class HomeView extends StatelessWidget {
                         height: 15,
                       ),
                       // TODO: tab bar
-                      Expanded(
-                          flex: 1,
-                          child: Container(
-                            color: Colors.red,
-                          )),
+                      Expanded(flex: 1, child: _buildTabBar()),
+                      const SizedBox(
+                        height: 25,
+                      ),
                       Expanded(
                           flex: 13,
                           child: Container(
@@ -43,6 +42,33 @@ class HomeView extends StatelessWidget {
       ),
     );
   }
+}
+
+Widget _buildTabBar() {
+  return ListView.builder(
+    physics: const BouncingScrollPhysics(),
+      scrollDirection: Axis.horizontal,
+      itemBuilder: (context, index) {
+        return AnimatedContainer(
+          margin: EdgeInsets.fromLTRB(index == 0 ? 15 : 5, 0, 5, 0),
+          duration: const Duration(milliseconds: 300),
+          width: 100,
+          decoration: BoxDecoration(
+            color: Colors.red,
+            borderRadius: BorderRadius.circular(15)
+          ),
+          child: const Center(
+            child: Text(
+              'data',
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 13,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+        );
+      });
 }
 
 class MyAppBar extends StatelessWidget {
