@@ -7,6 +7,10 @@ class SimpleUIController extends GetxController {
 
   RxList<PhotosModel> photos = RxList();
 
+  RxBool isLoading = true.obs;
+
+  RxString orderBy = "latest".obs;
+
   List<String> orders = [
     'latest',
     'oldest',
@@ -16,13 +20,21 @@ class SimpleUIController extends GetxController {
 
   // get
   Future<void> getPhotos() async {
-    var response = await ApiService().getMethod('https://api.unsplash.com/photos?per_page=30&order_by=latest&client_id=cWFCysdjffCFlEePFNBl2xAosrG93S2HyDBVahBte5A');
+    isLoading.value = true;
+    var response = await ApiService().getMethod('https://api.unsplash.com/photos?per_page=30&order_by=${orderBy.value}&client_id=cWFCysdjffCFlEePFNBl2xAosrG93S2HyDBVahBte5A');
 
+    photos = RxList();
     if (response.statusCode == 200) {
       response.data.forEach((elm){
         photos.add(PhotosModel.fromJson(elm));
       });
+      isLoading.value = false;
     }
+  }
+
+  orderFunc(String newVal){
+    orderBy.value = newVal;
+    getPhotos();
   }
 
   @override

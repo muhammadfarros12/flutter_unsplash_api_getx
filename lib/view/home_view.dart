@@ -39,7 +39,10 @@ class HomeView extends StatelessWidget {
                       Expanded(
                           flex: 13,
                           child: Obx(
-                            () => Padding(
+                            () => 
+                            simpleUIController.isLoading.value
+                            ? Center(child: customLoading(),)
+                            : Padding(
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 10),
                               child: GridView.custom(
@@ -99,6 +102,7 @@ class HomeView extends StatelessWidget {
         return Obx(
           () => GestureDetector(
             onTap: () {
+              simpleUIController.orderFunc(simpleUIController.orders[index]);
               simpleUIController.selectedIndex.value = index;
             },
             child: AnimatedContainer(
