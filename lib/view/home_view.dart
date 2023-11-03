@@ -1,5 +1,7 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:flutter_unsplash_api_getx/components/components.dart';
 import 'package:flutter_unsplash_api_getx/controller/simple_ui_controller.dart';
 import 'package:get/get.dart';
 
@@ -36,27 +38,48 @@ class HomeView extends StatelessWidget {
                       ),
                       Expanded(
                           flex: 13,
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 10),
-                            child: GridView.custom(
-                              shrinkWrap: true,
-                              physics: const BouncingScrollPhysics(),
-                                gridDelegate: SliverQuiltedGridDelegate(
-                                    crossAxisCount: 4,
-                                    mainAxisSpacing: 4,
-                                    crossAxisSpacing: 4,
-                                    pattern: [
-                                      const QuiltedGridTile(2, 2),
-                                      const QuiltedGridTile(1, 1),
-                                      const QuiltedGridTile(1, 1),
-                                      const QuiltedGridTile(1, 2),
-                                    ]),
-                                childrenDelegate:
-                                    SliverChildBuilderDelegate((context, index) {
-                                  return Container(
-                                    color: Colors.red,
-                                  );
-                                })),
+                          child: Obx(
+                            () => Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 10),
+                              child: GridView.custom(
+                                  shrinkWrap: true,
+                                  physics: const BouncingScrollPhysics(),
+                                  gridDelegate: SliverQuiltedGridDelegate(
+                                      crossAxisCount: 4,
+                                      mainAxisSpacing: 4,
+                                      crossAxisSpacing: 4,
+                                      pattern: [
+                                        const QuiltedGridTile(2, 2),
+                                        const QuiltedGridTile(1, 1),
+                                        const QuiltedGridTile(1, 1),
+                                        const QuiltedGridTile(1, 2),
+                                      ]),
+                                  childrenDelegate: SliverChildBuilderDelegate(
+                                      childCount: simpleUIController
+                                          .photos.length, (context, index) {
+                                    return Container(
+                                      // color: Colors.red,
+                                      child: CachedNetworkImage(
+                                        imageUrl: simpleUIController
+                                            .photos[index].urls!['small'],
+                                        imageBuilder: (context, img) {
+                                          return Container(
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                              image: DecorationImage(
+                                                  image: img,
+                                                  fit: BoxFit.cover),
+                                            ),
+                                          );
+                                        },
+                                        placeholder: (context, url) => Center(child: customLoading(),),
+                                        errorWidget: (context, url, error) => Center(child: errorIcon(),),
+                                      ),
+                                    );
+                                  })),
+                            ),
                           )),
                     ],
                   ))
@@ -69,6 +92,7 @@ class HomeView extends StatelessWidget {
 
   Widget _buildTabBar() {
     return ListView.builder(
+      itemCount: simpleUIController.orders.length,
       physics: const BouncingScrollPhysics(),
       scrollDirection: Axis.horizontal,
       itemBuilder: (context, index) {
@@ -91,7 +115,7 @@ class HomeView extends StatelessWidget {
                   )),
               child: Center(
                 child: Text(
-                  'data',
+                  simpleUIController.orders[index],
                   style: TextStyle(
                     // color: Colors.black,
                     color: index == simpleUIController.selectedIndex.value

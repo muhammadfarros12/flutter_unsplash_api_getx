@@ -9,7 +9,8 @@ class ApiService {
     dio.options.headers['Content-Type'] = 'application/json';
     return await dio.get(url,
     options: Options(responseType: ResponseType.json, method: "GET")).then((value){
-      log(value.toString());
+      return value;
+      // log(value.toString());
     });
   }
 
